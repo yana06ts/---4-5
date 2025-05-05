@@ -70,13 +70,19 @@
             width: 100%;
             max-width: 2000px;
         }
-        .search-container {
-            position: absolute;
-            right: 10%;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-        }
+            .search-container {
+        position: absolute;
+        top: 50%; 
+        left: 55%;
+        transform: translate(50%, 50%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 15px;
+        border-radius: 10px;
+        z-index: 10; 
+    }
+
         .search-container input {
             width: 200px;
             padding: 10px;
@@ -106,6 +112,50 @@
             background-color: #e0f7fa;
             border-radius: 10px;
         }
+            .appointment-button {
+        display: inline-block;
+        text-decoration: none;
+        background-color: #b3e5fc;
+        color: #000;
+        border: none;
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        border-radius: 5px;
+        text-align: center;
+        position: relative;
+        margin-bottom: 20px;
+        left: 0; 
+    }
+
+    .move-right { left: 85px; }  
+
+    .appointment-button:hover {
+        background-color: #81d4fa;
+    }
+    .search-button {
+        display: inline-block;
+        text-decoration: none;
+        background-color: #81d4fa;
+        color: #000;
+        border: none;
+        padding: 10px 20px;
+        font-size: 25px;
+        cursor: pointer;
+        border-radius: 5px;
+        text-align: center;
+        position: relative;
+        top: 0; 
+    }
+    .move-up { top: -5px; }  
+
+    .search-button:hover {
+        background-color: #4fc3f7;
+    }
+
+
+
+
     </style>
 
     <script>
@@ -135,6 +185,19 @@
                     <a href="children.html">Дети</a>
                 </div>
             </div>
+
+            <div class="search-container">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <a href="#" id="searchButton" class="search-button move-up">Найти</a>
+
+
+                    <input type="text" placeholder="Поиск..." id="searchBox">
+                </div>
+                <a href="appointment.html" class="appointment-button move-right">ЗАПИСАТЬСЯ</a>
+
+
+            </div>
+
             <div class="menu-button" onclick="togglePopup('pharmacy-popup', 'info-popup')">АПТЕКА
                 <div id="pharmacy-popup" class="popup">
                     <a href="products.html">Продукция</a>
@@ -147,13 +210,6 @@
         </div>
         <div class="main">
             <img src="clinic.jpg" alt="Моя Поликлиника">
-            <div class="search-container">
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <a href="#" id="searchButton" class="plain-link" style="background-color: #81d4fa; border-radius: 5px;">Найти</a>
-                    <input type="text" placeholder="Поиск..." id="searchBox">
-                </div>
-                <a href="appointment.html" style="margin-top: 10px; display: inline-block;">ЗАПИСЬ</a>
-            </div>
         </div>
         <div class="news">
             <h2>НОВОСТИ</h2>

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Результаты поиска</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff;
+            margin: 0;
+            padding: 20px;
+            font-size: x-large;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #007bff;
+        }
+
+        .results {
+            margin-top: 20px;
+        }
+
+        .result-item {
+            margin-bottom: 15px;
+        }
+
+        .result-item a {
+            text-decoration: none;
+            color: #007bff;
+            font-weight: bold;
+        }
+
+        .result-item p {
+            margin: 5px 0 0;
+            color: #555;
+        }
+
+        .no-results {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Результаты поиска</h1>
+    <p><strong>Запрос:</strong> <span id="searchQuery"></span></p>
+
+    <div class="results" id="resultsContainer">
+        <!-- Результаты будут здесь -->
+    </div>
+
+    <p class="no-results" id="noResults" style="display: none;">Ничего не найдено.</p>
+</div>
+
+<script>
+    // База данных для поиска
+    const searchDatabase = [
+        {
+            title: "Ссылка: История поликлиники",
+            url: "history.html",
+            description: "Узнайте о развитии нашей поликлиники за последние годы.",
+            keywords: ["история", "поликлиника", "развитие"]
+        },
+        {
+            title: "Ссылка: Наши врачи",
+            url: "doctors.html",
+            description: "Список опытных специалистов, работающих в поликлинике.",
+            keywords: ["врачи", "наши врачи", "специалисты", "доктора"]
+        },
+        {
+            title: "Ссылка: Дополнительные услуги",
+            url: "services.html",
+            description: "Ознакомьтесь с платными услугами, доступными у нас.",
+            keywords: ["услуги", "доп услуги", "платные услуги"]
+        },
+        {
+            title: "Ссылка: Педиатрия",
+            url: "children.html",
+            description: "Медицинские услуги для детей всех возрастов.",
+            keywords: ["дети", "педиатр", "услуги для детей"]
+        },
+        {
+            title: "Ссылка: Продукция аптеки",
+            url: "products.html",
+            description: "Ассортимент товаров и медикаментов в нашей аптеке.",
+            keywords: ["продукция", "аптека", "медикаменты"]
+        },
+        {
+            title: "Ссылка: Доставка лекарств",
+            url: "delivery.html",
+            description: "Информация о доставке лекарств на дом.",
+            keywords: ["доставка", "лекарства", "домой"]
+        },
+        {
+            title: "Ссылка: Акции и скидки",
+            url: "promotions.html",
+            description: "Текущие акции и выгодные предложения от поликлиники.",
+            keywords: ["акции", "скидки", "предложения"]
+        },
+        {
+            title: "Ссылка: Контакты",
+            url: "contacts.html",
+            description: "Как связаться с нами или найти по адресу.",
+            keywords: ["контакты", "адрес", "телефон"]
+        },
+        {
+            title: "Ссылка: Вход / Регистрация",
+            url: "auth.html",
+            description: "Страница авторизации и регистрации пользователей.",
+            keywords: ["вход", "регистрация", "войти", "войти на сайт"]
+        },
+        {
+            title: "Ссылка: Запись на приём",
+            url: "appointment.html",
+            description: "Онлайн-запись к врачу через наш сайт.",
+            keywords: ["запись", "прием", "запись на прием", "врач"]
+        }
+    ];
+
+    function getQueryParam(param) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(param);
+    }
+
+    const query = getQueryParam('query');
+    const resultsContainer = document.getElementById('resultsContainer');
+    const noResultsMessage = document.getElementById('noResults');
+    const searchQueryDisplay = document.getElementById('searchQuery');
+
+    if (query) {
+        const decodedQuery = decodeURIComponent(query).toLowerCase().trim();
+        searchQueryDisplay.textContent = decodedQuery;
+
+        if (!decodedQuery) {
+            noResultsMessage.style.display = 'block';
+            exit;
+        }
+
+        const searchWords = decodedQuery.split(/\s+/);
+
+        const results = [];
+
+        for (const item of searchDatabase) {
+            const allText = [...item.keywords, item.title.toLowerCase(), item.description.toLowerCase()].join(" ");
+            const match = searchWords.some(word => allText.includes(word));
+
+            if (match) {
+                results.push(item);
+            }
+        }
+
+        if (results.length > 0) {
+            results.forEach(result => {
+                const div = document.createElement('div');
+                div.className = 'result-item';
+                div.innerHTML = `
+                    <a href="${result.url}" target="_blank">${result.title}</a>
+                    <p>${result.description}</p>
+                `;
+                resultsContainer.appendChild(div);
+            });
+        } else {
+            noResultsMessage.style.display = 'block';
+        }
+    } else {
+        searchQueryDisplay.textContent = '(не указан)';
+        noResultsMessage.style.display = 'block';
+    }
+</script>
+
+</body>
+</html>
