@@ -11,26 +11,16 @@
             margin: 0;
             padding: 0;
             font-size: x-large;
-            overflow-x: hidden; /* Скрываем горизонтальный скролл по умолчанию */
+            overflow: hidden;
         }
 
         .container {
             max-width: 1200px;
-            min-width: 1000px; /* Фиксируем минимальную ширину */
+            width: 1000px;
             margin: 0 auto;
             padding: 10px;
-        }
-
-        /* Адаптация под маленькие экраны */
-        @media (max-width: 1024px) {
-            body {
-                overflow-x: auto;
-                white-space: nowrap;
-            }
-            .container {
-                display: inline-block;
-                white-space: normal;
-            }
+            transform-origin: top left;
+            will-change: transform, width, height;
         }
 
         .header {
@@ -117,6 +107,60 @@
             border-radius: 10px;
         }
     </style>
+
+    <script>
+        function resizePage() {
+            const container = document.querySelector('.container');
+            const pageWidth = 1000; // базовая ширина макета
+            const screenWidth = window.innerWidth;
+            const scale = Math.min(screenWidth / pageWidth, 1); // не больше 1
+
+            container.style.transform = `scale(${scale})`;
+            container.style.width = `${100 / scale}%`; // компенсируем сжатие
+            container.style.height = `${100 / scale}%`;
+        }
+
+        window.addEventListener('load', resizePage);
+        window.addEventListener('resize', resizePage);
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="menu-button" onclick="togglePopup('info-popup', 'pharmacy-popup')">ИНФО
+                <div id="info-popup" class="popup">
+                    <a href="history.html">История</a>
+                    <a href="doctors.html">Врачи</a>
+                    <a href="services.html">Доп услуги</a>
+                    <a href="children.html">Дети</a>
+                </div>
+            </div>
+            <div class="menu-button" onclick="togglePopup('pharmacy-popup', 'info-popup')">АПТЕКА
+                <div id="pharmacy-popup" class="popup">
+                    <a href="products.html">Продукция</a>
+                    <a href="delivery.html">Доставка</a>
+                </div>
+            </div>
+            <a href="promotions.html" class="plain-link">АКЦИИ</a>
+            <a href="contacts.html" class="plain-link">КОНТАКТЫ</a>
+            <a href="#" class="plain-link" id="loginButton">ВХОД/ЗАРЕГИСТРИРОВАТЬСЯ</a>
+        </div>
+        <div class="main">
+            <img src="clinic.jpg" alt="Моя Поликлиника">
+            <div class="search-container">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <a href="#" id="searchButton" class="plain-link" style="background-color: #81d4fa; border-radius: 5px;">Найти</a>
+                    <input type="text" placeholder="Поиск..." id="searchBox">
+                </div>
+                <a href="appointment.html" style="margin-top: 10px; display: inline-block;">ЗАПИСЬ</a>
+            </div>
+        </div>
+        <div class="news">
+            <h2>НОВОСТИ</h2>
+            <p>Новости нашей поликлиники.</p>
+        </div>
+    </div>
+
     <script>
         function togglePopup(idToShow, idToHide) {
             const popupToShow = document.getElementById(idToShow);
@@ -176,42 +220,5 @@
             }
         }
     </script>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <div class="menu-button" onclick="togglePopup('info-popup', 'pharmacy-popup')">ИНФО
-                <div id="info-popup" class="popup">
-                    <a href="history.html">История</a>
-                    <a href="doctors.html">Врачи</a>
-                    <a href="services.html">Доп услуги</a>
-                    <a href="children.html">Дети</a>
-                </div>
-            </div>
-            <div class="menu-button" onclick="togglePopup('pharmacy-popup', 'info-popup')">АПТЕКА
-                <div id="pharmacy-popup" class="popup">
-                    <a href="products.html">Продукция</a>
-                    <a href="delivery.html">Доставка</a>
-                </div>
-            </div>
-            <a href="promotions.html" class="plain-link">АКЦИИ</a>
-            <a href="contacts.html" class="plain-link">КОНТАКТЫ</a>
-            <a href="#" class="plain-link" id="loginButton">ВХОД/ЗАРЕГИСТРИРОВАТЬСЯ</a>
-        </div>
-        <div class="main">
-            <img src="clinic.jpg" alt="Моя Поликлиника">
-            <div class="search-container">
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <a href="#" id="searchButton" class="plain-link" style="background-color: #81d4fa; border-radius: 5px;">Найти</a>
-                    <input type="text" placeholder="Поиск..." id="searchBox">
-                </div>
-                <a href="appointment.html" style="margin-top: 10px; display: inline-block;">ЗАПИСЬ</a>
-            </div>
-        </div>
-        <div class="news">
-            <h2>НОВОСТИ</h2>
-            <p>Новости нашей поликлиники.</p>
-        </div>
-    </div>
 </body>
 </html>
