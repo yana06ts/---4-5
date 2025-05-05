@@ -111,12 +111,12 @@
     <script>
         function resizePage() {
             const container = document.querySelector('.container');
-            const pageWidth = 1000; // базовая ширина макета
+            const pageWidth = 1000;
             const screenWidth = window.innerWidth;
-            const scale = Math.min(screenWidth / pageWidth, 1); // не больше 1
+            const scale = Math.min(screenWidth / pageWidth, 1);
 
             container.style.transform = `scale(${scale})`;
-            container.style.width = `${100 / scale}%`; // компенсируем сжатие
+            container.style.width = `${100 / scale}%`;
             container.style.height = `${100 / scale}%`;
         }
 
