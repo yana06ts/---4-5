@@ -74,7 +74,7 @@
         position: absolute;
         top: 50%; 
         left: 55%;
-        transform: translate(50%, 50%);
+        transform: translate(43%, 50%);
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -112,23 +112,29 @@
             background-color: #e0f7fa;
             border-radius: 10px;
         }
-            .appointment-button {
-        display: inline-block;
-        text-decoration: none;
-        background-color: #b3e5fc;
-        color: #000;
-        border: none;
-        padding: 10px 20px;
-        font-size: 16px;
-        cursor: pointer;
-        border-radius: 5px;
-        text-align: center;
-        position: relative;
-        margin-bottom: 20px;
-        left: 0; 
-    }
+        .appointment-button {
+    width: 180px;
+    height: 30px;
+    display: flex; /* Используем flexbox */
+    align-items: center; /* Центрирование по вертикали */
+    justify-content: center; /* Центрирование по горизонтали */
+    text-decoration: none;
+    background-color: #b3e5fc;
+    color: #000;
+    border: none;
+    padding: 10px;
+    font-weight: bolder;
+    font-size: 25px !important;
+    cursor: pointer;
+    border-radius: 5px;
+    position: relative;
+    margin-bottom: 20px;
+    left: 0; 
+}
 
-    .move-right { left: 85px; }  
+
+
+    .move-right { left: 49px; }  
 
     .appointment-button:hover {
         background-color: #81d4fa;
@@ -140,6 +146,7 @@
         color: #000;
         border: none;
         padding: 10px 20px;
+        font-weight: bolder;
         font-size: 25px;
         cursor: pointer;
         border-radius: 5px;
@@ -193,7 +200,7 @@
 
                     <input type="text" placeholder="Поиск..." id="searchBox">
                 </div>
-                <a href="appointment.html" class="appointment-button move-right">ЗАПИСАТЬСЯ</a>
+                <a href="appointment.html" class="appointment-button move-right">ЗАПИСАТЬСЯ!</a>
 
 
             </div>
