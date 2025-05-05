@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ВХОД / РЕГИСТРАЦИЯ</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: #cce7ff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            text-align: center;
+        }
+        .tabs {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+        }
+        .tabs div {
+            cursor: pointer;
+            padding: 10px;
+            font-weight: bold;
+            border-bottom: 2px solid transparent;
+        }
+        .tabs .active {
+            color: #007bff;
+            border-bottom: 2px solid #007bff;
+        }
+        .checkbox-group {
+            text-align: left;
+            margin-top: 20px;
+        }
+        .checkbox-group label {
+            display: block;
+            margin: 10px 0;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="tabs">
+            <div id="loginTab" class="active">ВХОД</div>
+            <div id="registerTab">РЕГИСТРАЦИЯ</div>
+        </div>
+        <form id="loginForm">
+            <input type="text" placeholder="Логин" required><br><br>
+            <input type="password" placeholder="Пароль" required><br><br>
+            <button type="submit">Войти</button>
+        </form>
+        <form id="registerForm" class="hidden">
+            <input type="text" placeholder="Имя" required><br><br>
+            <input type="email" placeholder="Email" required><br><br>
+            <input type="password" placeholder="Пароль" required><br><br>
+            <button type="submit">Зарегистрироваться</button>
+        </form>
+        <div class="checkbox-group">
+            <label>
+                <input type="checkbox" name="role" value="employee"> Сотрудник
+            </label>
+            <label>
+                <input type="checkbox" name="role" value="patient"> Пациент
+            </label>
+        </div>
+    </div>
+
+    <script>
+        const loginTab = document.getElementById('loginTab');
+        const registerTab = document.getElementById('registerTab');
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+
+        loginTab.addEventListener('click', () => {
+            loginTab.classList.add('active');
+            registerTab.classList.remove('active');
+            loginForm.classList.remove('hidden');
+            registerForm.classList.add('hidden');
+        });
+
+        registerTab.addEventListener('click', () => {
+            registerTab.classList.add('active');
+            loginTab.classList.remove('active');
+            registerForm.classList.remove('hidden');
+            loginForm.classList.add('hidden');
+        });
+
+    document.getElementById('registerForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        alert('Регистрация успешна!');
+        localStorage.setItem('isLoggedIn', 'true');
+        window.location.href = 'index.html';
+    });
+
+    document.getElementById('loginForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        alert('Вход выполнен успешно!');
+        localStorage.setItem('isLoggedIn', 'true');
+        window.location.href = 'index.html';
+    });
+
+
+
+    </script>
+</body>
+</html>
