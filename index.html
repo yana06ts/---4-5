@@ -70,18 +70,18 @@
             width: 100%;
             max-width: 2000px;
         }
-            .search-container {
-        position: absolute;
-        top: 50%; 
-        left: 55%;
-        transform: translate(35%, 50%);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        padding: 15px;
-        border-radius: 10px;
-        z-index: 10; 
-    }
+        .search-container {
+            position: absolute;
+            top: 50%; 
+            left: 55%;
+            transform: translate(35%, 50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px;
+            border-radius: 10px;
+            z-index: 10; 
+        }
 
         .search-container input {
             width: 200px;
@@ -113,73 +113,51 @@
             border-radius: 10px;
         }
         .appointment-button {
-    width: 180px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-decoration: none;
-    background-color: #b3e5fc;
-    color: #000;
-    border: none;
-    padding: 10px;
-    font-weight: bolder;
-    font-size: 25px !important;
-    cursor: pointer;
-    border-radius: 5px;
-    position: relative;
-    margin-bottom: 20px;
-    left: 0; 
-}
-
-
-
-    .move-right { left: 49px; }  
-
-    .appointment-button:hover {
-        background-color: #81d4fa;
-    }
-    .search-button {
-        display: inline-block;
-        text-decoration: none;
-        background-color: #81d4fa;
-        color: #000;
-        border: none;
-        padding: 10px 20px;
-        font-weight: bolder;
-        font-size: 25px;
-        cursor: pointer;
-        border-radius: 5px;
-        text-align: center;
-        position: relative;
-        top: 0; 
-    }
-    .move-up { top: -5px; }  
-
-    .search-button:hover {
-        background-color: #4fc3f7;
-    }
-
-
-
-
-    </style>
-
-    <script>
-        function resizePage() {
-            const container = document.querySelector('.container');
-            const pageWidth = 1200;
-            const screenWidth = window.innerWidth;
-            const scale = Math.min(screenWidth / pageWidth, 1);
-
-            container.style.transform = `scale(${scale})`;
-            container.style.width = `${100 / scale}%`;
-            container.style.height = `${100 / scale}%`;
+            width: 180px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            background-color: #b3e5fc;
+            color: #000;
+            border: none;
+            padding: 10px;
+            font-weight: bolder;
+            font-size: 25px !important;
+            cursor: pointer;
+            border-radius: 5px;
+            position: relative;
+            margin-bottom: 20px;
+            left: 0; 
         }
 
-        window.addEventListener('load', resizePage);
-        window.addEventListener('resize', resizePage);
-    </script>
+        .move-right { left: 49px; }  
+
+        .appointment-button:hover {
+            background-color: #81d4fa;
+        }
+        .search-button {
+            display: inline-block;
+            text-decoration: none;
+            background-color: #81d4fa;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            font-weight: bolder;
+            font-size: 25px;
+            cursor: pointer;
+            border-radius: 5px;
+            text-align: center;
+            position: relative;
+            top: 0; 
+        }
+        .move-up { top: -5px; }  
+
+        .search-button:hover {
+            background-color: #4fc3f7;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -196,13 +174,9 @@
             <div class="search-container">
                 <div style="display: flex; align-items: center; gap: 10px;">
                     <a href="#" id="searchButton" class="search-button move-up">Найти</a>
-
-
                     <input type="text" placeholder="Поиск..." id="searchBox">
                 </div>
                 <a href="appointment.html" class="appointment-button move-right">ЗАПИСАТЬСЯ!</a>
-
-
             </div>
 
             <div class="menu-button" onclick="togglePopup('pharmacy-popup', 'info-popup')">АПТЕКА
@@ -225,6 +199,17 @@
     </div>
 
     <script>
+        function resizePage() {
+            const container = document.querySelector('.container');
+            const pageWidth = 1200;
+            const screenWidth = window.innerWidth;
+            const scale = Math.min(screenWidth / pageWidth, 1);
+
+            container.style.transform = `scale(${scale})`;
+            container.style.width = `${100 / scale}%`;
+            container.style.height = `${100 / scale}%`;
+        }
+
         function togglePopup(idToShow, idToHide) {
             const popupToShow = document.getElementById(idToShow);
             const popupToHide = document.getElementById(idToHide);
@@ -245,18 +230,29 @@
 
         document.addEventListener('DOMContentLoaded', function () {
             const loginLink = document.getElementById('loginButton');
+            const userData = localStorage.getItem('userData');
 
             if (localStorage.getItem('isLoggedIn') === 'true') {
-                loginLink.textContent = 'ВЫЙТИ';
+                if (userData) {
+                    loginLink.textContent = 'ЛИЧНЫЙ КАБИНЕТ';
+                    loginLink.href = 'account.html';
+                } else {
+                    loginLink.textContent = 'ВЫЙТИ';
+                }
             }
 
             loginLink.addEventListener('click', function (event) {
-                event.preventDefault();
-
-                if (loginLink.textContent.trim() === 'ВЫЙТИ') {
+                if (loginLink.textContent.trim() === 'ЛИЧНЫЙ КАБИНЕТ') {
+                    return;
+                } else if (loginLink.textContent.trim() === 'ВЫЙТИ') {
+                    event.preventDefault();
                     localStorage.removeItem('isLoggedIn');
+                    localStorage.removeItem('userData');
                     loginLink.textContent = 'ВХОД/ЗАРЕГИСТРИРОВАТЬСЯ';
+                    loginLink.href = '#';
+                    window.location.reload();
                 } else {
+                    event.preventDefault();
                     window.location.href = 'auth.html';
                 }
             });
@@ -282,6 +278,9 @@
                 alert("Введите текст для поиска.");
             }
         }
+
+        window.addEventListener('load', resizePage);
+        window.addEventListener('resize', resizePage);
     </script>
 </body>
 </html>

@@ -37,15 +37,60 @@
             color: #007bff;
             border-bottom: 2px solid #007bff;
         }
-        .checkbox-group {
+        .role-selection {
             text-align: left;
-            margin-top: 20px;
+            margin: 15px 0;
+            padding: 10px;
+            background-color: #e6f2ff;
+            border-radius: 5px;
         }
-        .checkbox-group label {
-            display: block;
-            margin: 10px 0;
+        .role-selection label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+        .role-selection input[type="radio"] {
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            background-color: #fff;
+            border: 2px solid #007bff;
+            border-radius: 50%;
+            margin-right: 10px;
+            transition: all 0.3s ease;
+        }
+        .role-selection input[type="radio"]:checked {
+            background-color: #007bff;
         }
         .hidden {
+            display: none;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin-top: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .error {
+            color: red;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        .doctor-select {
+            margin-top: 10px;
             display: none;
         }
     </style>
@@ -56,25 +101,54 @@
             <div id="loginTab" class="active">ВХОД</div>
             <div id="registerTab">РЕГИСТРАЦИЯ</div>
         </div>
+        
         <form id="loginForm">
-            <input type="text" placeholder="Логин" required><br><br>
-            <input type="password" placeholder="Пароль" required><br><br>
+            <input type="text" placeholder="Логин" required><br>
+            <input type="password" placeholder="Пароль" required><br>
+            
+            <div class="role-selection">
+                <label>
+                    <input type="radio" name="loginRole" value="patient" checked>
+                    Пациент
+                </label>
+                <label>
+                    <input type="radio" name="loginRole" value="employee">
+                    Сотрудник
+                </label>
+            </div>
+            
+            <div class="doctor-select" id="loginDoctorSelect">
+                <select id="loginDoctor" required>
+                    <option value="">Выберите врача</option>
+                    <option value="Д-р Жусель Денис">Д-р Жусель Денис</option>
+                    <option value="Д-р Адамовский Егор">Д-р Адамовский Егор</option>
+                    <option value="Д-р Пяткин Дмитрий">Д-р Пяткин Дмитрий</option>
+                </select>
+            </div>
+            
             <button type="submit">Войти</button>
+            <div id="loginError" class="error"></div>
         </form>
+        
         <form id="registerForm" class="hidden">
-            <input type="text" placeholder="Имя" required><br><br>
-            <input type="email" placeholder="Email" required><br><br>
-            <input type="password" placeholder="Пароль" required><br><br>
+            <input type="text" id="registerName" placeholder="ФИО" required><br>
+            <input type="email" id="registerEmail" placeholder="Email" required><br>
+            <input type="password" id="registerPassword" placeholder="Пароль" required><br>
+            
+            <div class="role-selection">
+                <label>
+                    <input type="radio" name="registerRole" value="patient" checked>
+                    Пациент
+                </label>
+                <label>
+                    <input type="radio" name="registerRole" value="employee">
+                    Сотрудник
+                </label>
+            </div>
+            
             <button type="submit">Зарегистрироваться</button>
+            <div id="registerError" class="error"></div>
         </form>
-        <div class="checkbox-group">
-            <label>
-                <input type="radio" name="role" value="employee"> Сотрудник
-            </label>
-            <label>
-                <input type="radio" name="role" value="patient"> Пациент
-            </label>
-        </div>
     </div>
 
     <script>
@@ -82,12 +156,55 @@
         const registerTab = document.getElementById('registerTab');
         const loginForm = document.getElementById('loginForm');
         const registerForm = document.getElementById('registerForm');
+        const loginError = document.getElementById('loginError');
+        const registerError = document.getElementById('registerError');
+        const loginDoctorSelect = document.getElementById('loginDoctorSelect');
+        const loginDoctorSelectElement = document.getElementById('loginDoctor');
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadRegisteredEmployees();
+        });
+
+function loadRegisteredEmployees() {
+    const employees = JSON.parse(localStorage.getItem('registeredEmployees')) || [];
+    
+    const baseDoctors = [];
+    for (let i = 0; i < Math.min(4, loginDoctorSelectElement.options.length); i++) {
+        baseDoctors.push({
+            value: loginDoctorSelectElement.options[i].value,
+            text: loginDoctorSelectElement.options[i].text
+        });
+    }
+    
+    loginDoctorSelectElement.innerHTML = '';
+    
+    baseDoctors.forEach(doctor => {
+        const option = document.createElement('option');
+        option.value = doctor.value;
+        option.textContent = doctor.text;
+        loginDoctorSelectElement.appendChild(option);
+    });
+    
+    employees.forEach(employee => {
+        const exists = Array.from(loginDoctorSelectElement.options).some(
+            opt => opt.value === employee.name
+        );
+        
+        if (!exists) {
+            const option = document.createElement('option');
+            option.value = employee.name;
+            option.textContent = employee.name;
+            loginDoctorSelectElement.appendChild(option);
+        }
+    });
+}
 
         loginTab.addEventListener('click', () => {
             loginTab.classList.add('active');
             registerTab.classList.remove('active');
             loginForm.classList.remove('hidden');
             registerForm.classList.add('hidden');
+            loginError.textContent = '';
         });
 
         registerTab.addEventListener('click', () => {
@@ -95,24 +212,96 @@
             loginTab.classList.remove('active');
             registerForm.classList.remove('hidden');
             loginForm.classList.add('hidden');
+            registerError.textContent = '';
         });
 
-    document.getElementById('registerForm').addEventListener('submit', function(event) {
-        event.preventDefault();
-        alert('Регистрация успешна!');
-        localStorage.setItem('isLoggedIn', 'true');
-        window.location.href = 'index.html';
-    });
+        document.querySelectorAll('input[name="loginRole"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                loginDoctorSelect.style.display = this.value === 'employee' ? 'block' : 'none';
+                document.getElementById('loginDoctor').required = this.value === 'employee';
+            });
+        });
 
-    document.getElementById('loginForm').addEventListener('submit', function(event) {
-        event.preventDefault();
-        alert('Вход выполнен успешно!');
-        localStorage.setItem('isLoggedIn', 'true');
-        window.location.href = 'index.html';
-    });
+        document.getElementById('registerForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('registerName').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const role = document.querySelector('input[name="registerRole"]:checked').value;
+            
+            if (!name || !email || !password) {
+                registerError.textContent = 'Заполните все поля';
+                return;
+            }
+            
+            const userData = {
+                name: name,
+                email: email,
+                role: role,
+                patients: role === 'employee' ? [] : null
+            };
+            
+            if (role === 'employee') {
+                const employees = JSON.parse(localStorage.getItem('registeredEmployees')) || [];
+                
+                if (!employees.some(emp => emp.name === name)) {
+                    employees.push({
+                        name: name,
+                        email: email
+                    });
+                    localStorage.setItem('registeredEmployees', JSON.stringify(employees));
 
+                    const option = document.createElement('option');
+                    option.value = name;
+                    option.textContent = name;
+                    loginDoctorSelectElement.appendChild(option);
+                }
+            }
+            
+            localStorage.setItem('userData', JSON.stringify(userData));
+            localStorage.setItem('isLoggedIn', 'true');
+            
+            alert('Регистрация успешна!');
+            window.location.href = 'account.html';
+        });
 
-
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            const login = this.querySelector('input[type="text"]').value;
+            const password = this.querySelector('input[type="password"]').value;
+            const role = document.querySelector('input[name="loginRole"]:checked').value;
+            const doctor = role === 'employee' ? document.getElementById('loginDoctor').value : null;
+            
+            if (!login || !password) {
+                loginError.textContent = 'Введите логин и пароль';
+                return;
+            }
+            
+            if (role === 'employee' && !doctor) {
+                loginError.textContent = 'Выберите врача';
+                return;
+            }
+           
+            const testPatients = [
+                { name: "Иван Иванов", diagnosis: "ОРВИ", visitDate: "2023-05-15" },
+                { name: "Мария Петрова", diagnosis: "Консультация", visitDate: "2023-05-16" }
+            ];
+            
+            const userData = {
+                name: role === 'employee' ? doctor : "Иван Иванов",
+                email: role === 'employee' ? "doctor@clinic.ru" : "patient@example.com",
+                role: role,
+                patients: role === 'employee' ? testPatients : []
+            };
+            
+            localStorage.setItem('userData', JSON.stringify(userData));
+            localStorage.setItem('isLoggedIn', 'true');
+            
+            alert('Вход выполнен успешно!');
+            window.location.href = 'account.html';
+        });
     </script>
 </body>
 </html>

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Личный кабинет</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background-color: #e0f7fa;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 30px;
+            border-radius: 10px;
+        }
+        .user-info {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .info-row {
+            display: flex;
+            margin-bottom: 15px;
+        }
+        .info-label {
+            font-weight: bold;
+            width: 150px;
+        }
+        .info-value {
+            flex-grow: 1;
+        }
+        .logout-btn {
+            background-color: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+        .logout-btn:hover {
+            background-color: #ff5252;
+        }
+        .section-title {
+            color: #007bff;
+            border-bottom: 2px solid #e0f7fa;
+            padding-bottom: 5px;
+            margin-top: 30px;
+        }
+        .patient-data {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+            margin-top: 15px;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-link">← Вернуться на главную</a>
+
+        <div class="header">
+            <h1>Личный кабинет</h1>
+        </div>
+
+        <div class="user-info">
+            <h2 class="section-title">Личная информация</h2>
+
+            <div class="info-row">
+                <div class="info-label">ФИО:</div>
+                <div class="info-value" id="userName"></div>
+            </div>
+
+            <div class="info-row">
+                <div class="info-label">Email:</div>
+                <div class="info-value" id="userEmail"></div>
+            </div>
+
+            <div class="info-row">
+                <div class="info-label">Роль:</div>
+                <div class="info-value" id="userRole"></div>
+            </div>
+
+            <button class="logout-btn" id="logoutBtn">Выйти из системы</button>
+        </div>
+
+        <div id="employeeSection" class="hidden">
+            <h2 class="section-title">Мои пациенты</h2>
+            <div class="patients-list">
+                <table id="patientsTable">
+                    <thead>
+                        <tr>
+                            <th>ФИО</th>
+                            <th>Дата приема</th>
+                            <th>Диагноз</th>
+                            <th>Анализы</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="patientSection" class="hidden">
+            <h2 class="section-title">Мои данные</h2>
+            <div class="patient-data">
+                <div class="info-row">
+                    <div class="info-label">Последний визит:</div>
+                    <div class="info-value" id="lastVisit"></div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Диагноз:</div>
+                    <div class="info-value" id="diagnosis"></div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Назначения:</div>
+                    <div class="info-value" id="prescriptions"></div>
+                </div>
+            </div>
+
+            <h2 class="section-title">Мои записи</h2>
+            <div id="appointmentsSection" class="patient-data">
+                <p id="noAppointments">У вас нет предстоящих записей</p>
+                <div id="appointmentsList"></div>
+                <a href="appointment.html" class="back-link">Записаться на прием →</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const userData = JSON.parse(localStorage.getItem('userData'));
+
+            if (!userData) {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            document.getElementById('userName').textContent = userData.name;
+            document.getElementById('userEmail').textContent = userData.email;
+            document.getElementById('userRole').textContent =
+                userData.role === 'employee' ? 'Сотрудник' : 'Пациент';
+
+            if (userData.role === 'employee') {
+                document.getElementById('employeeSection').classList.remove('hidden');
+                fillPatientsTable(userData.patients);
+            } else {
+                document.getElementById('patientSection').classList.remove('hidden');
+                fillPatientData();
+                loadAppointments();
+            }
+
+            document.getElementById('logoutBtn').addEventListener('click', function () {
+                localStorage.removeItem('isLoggedIn');
+                localStorage.removeItem('userData');
+                window.location.href = 'index.html';
+            });
+
+            function fillPatientsTable(patients) {
+                const tbody = document.querySelector('#patientsTable tbody');
+                tbody.innerHTML = '';
+
+                patients.forEach(patient => {
+                    const row = document.createElement('tr');
+
+                    row.innerHTML = `
+                        <td>${patient.name}</td>
+                        <td>${patient.visitDate || 'Не указана'}</td>
+                        <td>${patient.diagnosis || 'Не указан'}</td>
+                        <td>${patient.analysis || 'Не указаны'}</td>
+                    `;
+
+                    tbody.appendChild(row);
+                });
+            }
+
+            function fillPatientData() {
+                document.getElementById('lastVisit').textContent = '2023-05-10';
+                document.getElementById('diagnosis').textContent = 'ОРВИ';
+                document.getElementById('prescriptions').textContent = 'Постельный режим, обильное питье';
+            }
+
+            function loadAppointments() {
+                const appointments = JSON.parse(localStorage.getItem('appointments')) || [];
+                const patientName = userData.name;
+                const filteredAppointments = appointments.filter(appt => appt.patient === patientName);
+
+                const container = document.getElementById('appointmentsList');
+                const noAppointments = document.getElementById('noAppointments');
+                container.innerHTML = '';
+
+                if (filteredAppointments.length > 0) {
+                    noAppointments.style.display = 'none';
+
+                    filteredAppointments.forEach(appt => {
+                        const div = document.createElement('div');
+                        div.style.marginBottom = '15px';
+                        div.innerHTML = `
+                            <strong>Дата:</strong> ${appt.date}<br>
+                            <strong>Время:</strong> ${appt.time}<br>
+                            <strong>Врач:</strong> ${appt.doctor}
+                        `;
+                        container.appendChild(div);
+                    });
+                } else {
+                    noAppointments.style.display = 'block';
+                }
+            }
+        });
+    </script>
+</body>
+</html>
